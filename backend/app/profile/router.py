@@ -10,6 +10,7 @@ import users.user.utils as users_utils
 
 import users.user_integrations.crud as user_integrations_crud
 
+import polar.crud as polar_crud
 import users.user_privacy_settings.crud as users_privacy_settings_crud
 import users.user_privacy_settings.schema as users_privacy_settings_schema
 
@@ -93,6 +94,8 @@ async def read_users_me(
 
     user.is_strava_linked = 1 if user_integrations.strava_token else 0
     user.is_garminconnect_linked = 1 if user_integrations.garminconnect_oauth1 else 0
+    polar_account = polar_crud.get_account_by_user_id(user.id, db)
+    user.is_polar_linked = 1 if polar_account and polar_account.is_linked else 0
 
     user_privacy_settings = (
         users_privacy_settings_crud.get_user_privacy_settings_by_user_id(user.id, db)

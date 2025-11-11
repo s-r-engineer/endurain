@@ -24,3 +24,17 @@ On link, user will need to provide his/her API client ID and secret. Pair will b
 On Strava unlink action every data imported from Strava, i.e. activities and gears, will be deleted according to Strava [API Agreement](https://www.strava.com/legal/api).
 
 For Strava integration [stravalib](https://github.com/stravalib/stravalib) Python module is used.
+
+## Polar AccessLink Integration
+
+Polar AccessLink support follows a similar OAuth flow: each user provides the Client ID and Client secret of their Polar application and approves access through Polar Flow. Once the authorization code is exchanged, access tokens are stored encrypted in the database for future API calls.
+
+Polar activities are ingested through [AccessLink webhooks](https://www.polar.com/accesslink-api/#accesslink-webhooks). To configure the integration:
+
+1. Create an API client in [Polar's AccessLink admin](https://admin.polaraccesslink.com/) and add a redirect URL pointing to `https://<your-domain>/polar/callback`.
+2. Create a webhook that targets `https://<your-domain>/api/v1/polar/webhook`. Copy the signature secret key that is shown once and set it as the `POLAR_WEBHOOK_SECRET` environment variable (or `POLAR_WEBHOOK_SECRET_FILE` for Docker secrets). This key is required to verify incoming webhook payloads.
+3. Share the Client ID and Client secret with the Endurain user that will link Polar. These values are encrypted and kept until the link or relink process finishes.
+
+Whenever Polar notifies Endurain about a new exercise, Endurain downloads the original GPX from AccessLink and imports it automatically—no manual refresh endpoint is required. Unlinking Polar removes every activity that was imported from AccessLink for that user.
+
+Polar AccessLink requests are implemented with standard `requests` calls in the backend.

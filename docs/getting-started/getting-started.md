@@ -80,6 +80,7 @@ Environment variable  | How to set it |
 | FERNET_KEY |Run `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"` on a terminal to get a secret or go to [https://fernetkeygen.com](https://fernetkeygen.com). Example output is `7NfMMRSCWcoNDSjqBX8WoYH9nTFk1VdQOdZY13po53Y=` |
 | TZ | Timezone definition. Insert your timezone. List of available time zones [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Format `Europe/Lisbon` expected |
 | ENDURAIN_HOST | https://endurain.yourdomain.com |
+| POLAR_WEBHOOK_SECRET | Secret used to verify Polar AccessLink webhooks. Copy the signing key shown when you create the webhook in Polar AccessLink admin. |
 | BEHIND_PROXY | Change to true if behind reverse proxy |
 | POSTGRES_DB | Postgres name for the database. |
 | POSTGRES_USER | Postgres user for the database. |

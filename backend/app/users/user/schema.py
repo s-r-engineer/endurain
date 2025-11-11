@@ -147,6 +147,7 @@ class UserRead(User):
 class UserMe(UserRead):
     is_strava_linked: int | None = None
     is_garminconnect_linked: int | None = None
+    is_polar_linked: int | None = None
     default_activity_visibility: int | None = None
     hide_activity_start_time: bool | None = None
     hide_activity_location: bool | None = None

@@ -135,6 +135,12 @@ class Activity(Base):
     garminconnect_gear_id = Column(
         String(length=45), nullable=True, comment="Garmin Connect gear ID"
     )
+    polar_exercise_id = Column(
+        String(length=64),
+        nullable=True,
+        unique=True,
+        comment="Polar exercise hashed ID",
+    )
     import_info = Column(
         JSON, default=None, nullable=True, doc="Additional import information"
     )

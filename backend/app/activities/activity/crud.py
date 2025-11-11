@@ -1130,6 +1130,35 @@ def get_activity_by_garminconnect_id_from_user_id(
         ) from err
 
 
+def get_activity_by_polar_id_from_user_id(
+    polar_exercise_id: str, user_id: int, db: Session
+):
+    try:
+        activity = (
+            db.query(activities_models.Activity)
+            .filter(
+                activities_models.Activity.user_id == user_id,
+                activities_models.Activity.polar_exercise_id == polar_exercise_id,
+            )
+            .first()
+        )
+
+        if not activity:
+            return None
+
+        return activities_utils.serialize_activity(activity)
+    except Exception as err:
+        core_logger.print_to_log(
+            f"Error in get_activity_by_polar_id_from_user_id: {err}",
+            "error",
+            exc=err,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal Server Error",
+        ) from err
+
+
 def get_activities_if_contains_name(name: str, user_id: int, db: Session):
     try:
         # Define a search term
@@ -1420,6 +1449,31 @@ def delete_all_strava_activities_for_user(user_id: int, db: Session):
         )
 
         # Raise an HTTPException with a 500 Internal Server Error status code
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal Server Error",
+        ) from err
+
+
+def delete_all_polar_activities_for_user(user_id: int, db: Session):
+    try:
+        num_deleted = (
+            db.query(activities_models.Activity)
+            .filter(
+                activities_models.Activity.user_id == user_id,
+                activities_models.Activity.polar_exercise_id.isnot(None),
+            )
+            .delete()
+        )
+        if num_deleted:
+            db.commit()
+    except Exception as err:
+        db.rollback()
+        core_logger.print_to_log(
+            f"Error in delete_all_polar_activities_for_user: {err}",
+            "error",
+            exc=err,
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal Server Error",

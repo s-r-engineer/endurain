@@ -24,7 +24,7 @@
           >
           <input
             class="form-control"
-            type="number"
+            :type="numberFieldType"
             name="numberToEmit"
             :placeholder="`${numberFieldLabel}`"
             v-model="numberToEmit"
@@ -83,8 +83,12 @@ const props = defineProps({
     required: true
   },
   numberDefaultValue: {
-    type: Number,
-    default: 7
+    type: [Number, String],
+    default: null
+  },
+  numberFieldType: {
+    type: String,
+    default: 'number'
   },
   stringFieldLabel: {
     type: String,

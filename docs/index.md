@@ -29,7 +29,7 @@
 Endurain is a self-hosted fitness tracking service designed to give users full control over their data and hosting environment. Built with:
 
 - **Frontend:** Vue.js, Notivue and Bootstrap CSS
-- **Backend:** Python FastAPI, Alembic, SQLAlchemy, Apprise, stravalib and python-garminconnect for Strava and Garmin Connect integration, gpxpy, tcxreader and fitdecode for .gpx, .tcx and .fit file import respectively 
+- **Backend:** Python FastAPI, Alembic, SQLAlchemy, Apprise, stravalib and python-garminconnect for Strava and Garmin Connect integration, Polar AccessLink utilities (requests) for Polar support, gpxpy, tcxreader and fitdecode for .gpx, .tcx and .fit file import respectively 
 - **Database:** MariaDB or PostgreSQL for efficient data management
 - **Observability:** Jaeger for basic tracing and monitoring
 
@@ -49,6 +49,7 @@ Endurain currently supports:
 - Activity import via manual or bulk upload (.gpx, .tcx and .fit files. .fit files are preferred)
 - Strava integration for syncing activities and gear
 - Garmin Connect integration for syncing activities, gear and body composition
+- Polar AccessLink integration for webhook-based activity syncing
 - Activity feeds and statistics (week/month)
 - Basic activity privacy settings
 - Gear tracking (wetsuits, bicycles, shoes, racquets, skis, snowboards)

@@ -48,6 +48,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { push } from 'notivue'
 // Importing the services
 import { strava } from '@/services/stravaService'
+import { polar } from '@/services/polarService'
 // Importing the components
 import SettingsSideBarComponent from '../components/Settings/SettingsSideBarComponent.vue'
 import SettingsUsersZone from '../components/Settings/SettingsUsersZone.vue'
@@ -121,6 +122,35 @@ onMounted(async () => {
     } catch (error) {
       // If there is an error, set the error message and show the error alert.
       push.error(`${t('settingsIntegrationsZone.errorMessageUnableToUnSetStravaState')} - ${error}`)
+    }
+  }
+
+  if (route.query.polarLinked === '1') {
+    activeSection.value = 'integrations'
+
+    const user = authStore.user
+    user.is_polar_linked = 1
+    authStore.setUser(user, locale)
+
+    push.success(t('settingsIntegrationsZone.successMessagePolarAccountLinked'))
+
+    try {
+      await polar.setUniqueUserStatePolarLink(null)
+    } catch (error) {
+      push.error(
+        `${t('settingsIntegrationsZone.errorMessageUnableToUnsetPolarState')} - ${error}`
+      )
+    }
+  }
+
+  if (route.query.polarLinked === '0') {
+    activeSection.value = 'integrations'
+    try {
+      await polar.setUniqueUserStatePolarLink(null)
+    } catch (error) {
+      push.error(
+        `${t('settingsIntegrationsZone.errorMessageUnableToUnsetPolarState')} - ${error}`
+      )
     }
   }
 })

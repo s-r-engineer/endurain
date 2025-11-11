@@ -106,6 +106,12 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/polar/callback',
+    name: 'polar-callback',
+    component: () => import('../views/Polar/PolarCallbackView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: () => import('../views/NotFoundView.vue'),

@@ -86,6 +86,65 @@
             </div>
           </div>
         </li>
+        <!-- Polar zone -->
+        <li class="list-group-item d-flex justify-content-between bg-body-tertiary px-0 pb-0">
+          <div class="d-flex align-items-center">
+            <font-awesome-icon class="me-2" :icon="['fas', 'snowflake']" size="2x" />
+            <div class="ms-3">
+              <div class="fw-bold">
+                {{ $t('settingsIntegrationsZone.polarIntegrationTitle') }}
+              </div>
+              {{ $t('settingsIntegrationsZone.polarIntegrationBody') }}
+            </div>
+          </div>
+          <div class="d-flex align-items-center">
+            <a
+              href="#"
+              class="btn btn-primary"
+              role="button"
+              data-bs-toggle="modal"
+              data-bs-target="#connectPolarClientModal"
+              v-if="authStore.user.is_polar_linked !== 1"
+              >{{ $t('settingsIntegrationsZone.buttonConnect') }}</a
+            >
+
+            <div class="dropdown" v-else>
+              <button
+                class="btn btn-secondary dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                {{ $t('settingsIntegrationsZone.buttonDropdownOptions') }}
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <a
+                    href="#"
+                    class="dropdown-item"
+                    role="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#connectPolarClientModal"
+                    >{{ $t('settingsIntegrationsZone.buttonRelink') }}</a
+                  >
+                </li>
+                <li>
+                  <hr class="dropdown-divider" />
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="dropdown-item"
+                    role="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#unlinkPolarModal"
+                    >{{ $t('settingsIntegrationsZone.buttonUnlink') }}</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </li>
         <!-- Garmin Connect zone -->
         <li class="list-group-item d-flex justify-content-between bg-body-tertiary px-0 pb-0">
           <div class="d-flex align-items-center">
@@ -235,6 +294,29 @@
       <!-- modal garmin connect auth -->
       <GarminConnectLoginModalComponent />
 
+      <!-- modal connect Polar client -->
+      <ModalComponentNumberAndStringInput
+        modalId="connectPolarClientModal"
+        :title="t('settingsIntegrationsZone.modalConnectPolarTitle')"
+        :numberFieldLabel="t('settingsIntegrationsZone.modalConnectPolarClientIdLabel')"
+        :numberFieldType="'text'"
+        :numberDefaultValue="null"
+        :stringFieldLabel="t('settingsIntegrationsZone.modalConnectPolarClientSecretLabel')"
+        :actionButtonType="`success`"
+        :actionButtonText="t('settingsIntegrationsZone.buttonConnect')"
+        @fieldsToEmitAction="submitConnectPolar"
+      />
+
+      <!-- modal unlink Polar -->
+      <ModalComponent
+        modalId="unlinkPolarModal"
+        :title="t('settingsIntegrationsZone.modalUnlinkPolarTitle')"
+        :body="`${t('settingsIntegrationsZone.modalUnlinkPolarBody')}`"
+        :actionButtonType="`danger`"
+        :actionButtonText="t('settingsIntegrationsZone.modalUnlinkPolarTitle')"
+        @submitAction="buttonPolarUnlink"
+      />
+
       <!-- modal retrieve Garmin Connect activities by days -->
       <ModalComponentNumberInput
         modalId="retrieveGarminConnectActivitiesByDaysModal"
@@ -291,6 +373,7 @@ import { useI18n } from 'vue-i18n'
 import { push } from 'notivue'
 import { useAuthStore } from '@/stores/authStore'
 import { strava } from '@/services/stravaService'
+import { polar } from '@/services/polarService'
 import { activities } from '@/services/activitiesService'
 import { garminConnect } from '@/services/garminConnectService'
 import ModalComponent from '@/components/Modals/ModalComponent.vue'
@@ -325,6 +408,29 @@ async function submitConnectStrava(stravaClient) {
   }
 }
 
+async function submitConnectPolar(polarClient) {
+  const array = new Uint8Array(16)
+  window.crypto.getRandomValues(array)
+  const state = Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('')
+  try {
+    await polar.setUniqueUserStatePolarLink(state)
+    await polar.setUserPolarClientSettings(polarClient.numberToEmit, polarClient.stringToEmit)
+    polar.linkPolar(state, polarClient.numberToEmit)
+  } catch (error) {
+    push.error(`${t('settingsIntegrationsZone.errorMessageUnableToLinkPolar')} - ${error}`)
+    try {
+      await polar.setUniqueUserStatePolarLink(null)
+    } catch (unsetError) {
+      push.error(
+        `${t('settingsIntegrationsZone.errorMessageUnableToUnsetPolarClientSettings')} - ${unsetError}`
+      )
+    }
+  } finally {
+    polarClient.numberToEmit = null
+    polarClient.stringToEmit = null
+  }
+}
+
 async function submitRetrieveStravaActivities(daysToRetrieveStrava) {
   try {
     await strava.getStravaActivitiesLastDays(daysToRetrieveStrava)
@@ -356,6 +462,21 @@ async function buttonStravaUnlink() {
   } catch (error) {
     notification.reject(
       `${t('settingsIntegrationsZone.errorMessageUnableToUnlinkStrava')} - ${error}`
+    )
+  }
+}
+
+async function buttonPolarUnlink() {
+  const notification = push.promise(t('settingsIntegrationsZone.processingMessageUnlinkPolar'))
+  try {
+    await polar.unlinkPolar()
+    const user = authStore.user
+    user.is_polar_linked = 0
+    authStore.setUser(user, locale)
+    notification.resolve(t('settingsIntegrationsZone.successMessagePolarUnlinked'))
+  } catch (error) {
+    notification.reject(
+      `${t('settingsIntegrationsZone.errorMessageUnableToUnlinkPolar')} - ${error}`
     )
   }
 }

@@ -43,5 +43,19 @@
   "modalRetrieveHealthDataByDateRangeTitle": "Récupérer les données de santé par période",
   "errorMessageUnableToGetGarminConnectHealthDataDays": "Impossible d'obtenir les données de santé de Garmin Connect par jours",
   "errorMessageUnableToGetGarminConnectHealthDataDateRange": "Impossible d'obtenir les données de santé de Garmin Connect par période",
-  "loadingMessageRetrievingGarminConnectHealthData": "Récupération des données de santé de Garmin Connect"
+  "loadingMessageRetrievingGarminConnectHealthData": "Récupération des données de santé de Garmin Connect",
+  "polarIntegrationTitle": "Polar",
+  "polarIntegrationBody": "Polar AccessLink allows you to import workouts recorded on Polar devices.",
+  "modalConnectPolarTitle": "Connecter Polar",
+  "modalConnectPolarClientIdLabel": "Identifiant client",
+  "modalConnectPolarClientSecretLabel": "Secret client",
+  "errorMessageUnableToLinkPolar": "Impossible de lier le compte Polar",
+  "errorMessageUnableToUnsetPolarClientSettings": "Unable to unset Polar client and state settings after linking error",
+  "successMessagePolarAccountLinked": "Compte Polar associé",
+  "errorMessageUnableToUnsetPolarState": "Impossible d'annuler l'état de Polar",
+  "processingMessageUnlinkPolar": "Dissociation du compte Polar...",
+  "successMessagePolarUnlinked": "Compte Polar dissocié",
+  "errorMessageUnableToUnlinkPolar": "Impossible de dissocier le compte Polar",
+  "modalUnlinkPolarTitle": "Dissocier Polar",
+  "modalUnlinkPolarBody": "Are you sure you want to unlink your Polar account? Unlinking your Polar account will remove all data imported from Polar."
 }

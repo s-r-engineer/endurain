@@ -24,6 +24,7 @@ export const useAuthStore = defineStore('auth', {
       currency: null,
       is_strava_linked: null,
       is_garminconnect_linked: null,
+      is_polar_linked: null,
       default_activity_visibility: 0,
       hide_activity_start_time: false,
       hide_activity_location: false,
@@ -63,6 +64,9 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     setUser(userData, session_id, locale) {
+      if (typeof userData.is_polar_linked === 'undefined') {
+        userData.is_polar_linked = 0
+      }
       this.user = userData
       localStorage.setItem('user', JSON.stringify(this.user))
       localStorage.setItem('session_id', session_id)
@@ -89,9 +93,10 @@ export const useAuthStore = defineStore('auth', {
         photo_path: '',
         active: null,
         first_day_of_week: 0,
-        currency: null,
-        is_strava_linked: null,
-        is_garminconnect_linked: null,
+      currency: null,
+      is_strava_linked: null,
+      is_garminconnect_linked: null,
+      is_polar_linked: null,
         default_activity_visibility: 0,
         hide_activity_start_time: false,
         hide_activity_location: false,
@@ -120,6 +125,9 @@ export const useAuthStore = defineStore('auth', {
       const storedUser = localStorage.getItem('user')
       if (storedUser) {
         this.user = JSON.parse(storedUser)
+        if (typeof this.user.is_polar_linked === 'undefined') {
+          this.user.is_polar_linked = 0
+        }
         this.isAuthenticated = true
         this.setLocale(this.user.preferred_language, locale)
         this.setUserWebsocket()

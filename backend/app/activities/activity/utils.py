@@ -269,6 +269,7 @@ def transform_schema_activity_to_model_activity(
         strava_activity_id=activity.strava_activity_id,
         garminconnect_activity_id=activity.garminconnect_activity_id,
         garminconnect_gear_id=activity.garminconnect_gear_id,
+        polar_exercise_id=activity.polar_exercise_id,
         import_info=activity.import_info,
         is_hidden=activity.is_hidden if activity.is_hidden is not None else False,
         hide_start_time=activity.hide_start_time,
@@ -363,6 +364,7 @@ async def parse_and_store_activity_from_file(
     db: Session,
     from_garmin: bool = False,
     garminconnect_gear: dict = None,
+    activity_overrides: dict | None = None,
 ):
     try:
         core_logger.print_to_log_and_console(
@@ -404,6 +406,9 @@ async def parse_and_store_activity_from_file(
             )
 
             if parsed_info is not None:
+                if activity_overrides:
+                    for key, value in activity_overrides.items():
+                        setattr(parsed_info["activity"], key, value)
                 created_activities = []
                 idsToFileName = ""
                 if file_extension.lower() in (

@@ -196,3 +196,11 @@ class User(Base):
         back_populates="user",
         cascade="all, delete-orphan",
     )
+
+    # Define a one-to-one relationship to PolarAccount model
+    polar_account = relationship(
+        "PolarAccount",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )

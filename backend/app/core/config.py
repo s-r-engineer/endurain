@@ -12,6 +12,7 @@ LICENSE_NAME = "GNU Affero General Public License v3.0 or later"
 LICENSE_IDENTIFIER = "AGPL-3.0-or-later"
 LICENSE_URL = "https://spdx.org/licenses/AGPL-3.0-or-later.html"
 ROOT_PATH = "/api/v1"
+ENDURAIN_HOST = os.getenv("ENDURAIN_HOST")
 FRONTEND_DIR = os.getenv("FRONTEND_DIR", "/app/frontend/dist")
 BACKEND_DIR = os.getenv("BACKEND_DIR", "/app/backend")
 DATA_DIR = os.getenv("DATA_DIR", "/app/backend/data")
@@ -57,6 +58,7 @@ SUPPORTED_FILE_FORMATS = [
     ".tcx",
     ".gz",
 ]  # used to screen bulk import files
+POLAR_WEBHOOK_SECRET = read_secret("POLAR_WEBHOOK_SECRET")
 
 
 def read_secret(env_var_name: str, default_value: str | None = None) -> str | None:
